@@ -4,3 +4,4 @@ New changes line 3
 New changes line 4b
 New changes line 5 
 New changes line 6a
+New change line 7
