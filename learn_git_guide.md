@@ -461,13 +461,88 @@ git push origin --delete v1.0.0
 
 ### Cherry-pick
 
+**Cherry-pick** 允许你将其他分支的特定提交应用到当前分支，而不需要合并整个分支。这对于选择性应用提交非常有用。
+
+**基本用法:**
 ```bash
 # 将指定提交应用到当前分支
 git cherry-pick commit-hash
 
-# 不自动提交
+# 不自动提交 (只应用更改到工作区)
 git cherry-pick --no-commit commit-hash
+
+# 应用多个提交 (按顺序应用)
+git cherry-pick commit-hash1 commit-hash2 commit-hash3
+
+# 应用一个范围的提交 (不包含 start-commit)
+git cherry-pick start-commit..end-commit
+
+# 应用一个范围的提交 (包含 start-commit)
+git cherry-pick start-commit^..end-commit
 ```
+
+**常用选项:**
+```bash
+# 只应用更改但不提交 (需要手动提交)
+git cherry-pick --no-commit commit-hash
+
+# 编辑提交信息
+git cherry-pick -e commit-hash
+git cherry-pick --edit commit-hash
+
+# 不创建提交，只更新工作区和暂存区
+git cherry-pick -n commit-hash
+git cherry-pick --no-commit commit-hash
+
+# 如果提交已经存在，跳过
+git cherry-pick --ff commit-hash
+
+# 即使提交已经存在，也创建新的提交
+git cherry-pick --no-ff commit-hash
+```
+
+**处理冲突:**
+```bash
+# 如果发生冲突，解决后继续
+git cherry-pick --continue
+
+# 跳过当前提交
+git cherry-pick --skip
+
+# 取消 cherry-pick 操作
+git cherry-pick --abort
+```
+
+**实际应用场景:**
+
+1. **从其他分支应用 bug 修复:**
+   ```bash
+   # 在 main 分支上应用 feature 分支的某个 bug 修复
+   git checkout main
+   git cherry-pick abc123  # feature 分支上的修复提交
+   ```
+
+2. **选择性应用提交:**
+   ```bash
+   # 只应用某些提交，而不是合并整个分支
+   git checkout release
+   git cherry-pick commit1 commit2 commit3
+   ```
+
+3. **从已删除的分支恢复提交:**
+   ```bash
+   # 找到提交哈希
+   git log --all --oneline
+   # 应用该提交
+   git cherry-pick commit-hash
+   ```
+
+**注意事项:**
+- ⚠️ Cherry-pick 会创建新的提交，即使内容相同，提交哈希也会不同
+- ⚠️ 如果提交依赖其他提交，可能需要手动处理依赖关系
+- ⚠️ 频繁使用 cherry-pick 可能导致提交历史混乱，优先考虑 merge 或 rebase
+- ✅ 适合紧急修复、热修复等场景
+- ✅ 适合从已删除的分支恢复特定提交
 
 ### 查找问题 (Bisect)
 
